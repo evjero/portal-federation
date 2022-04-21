@@ -1,0 +1,25 @@
+{
+  "name": "portal-federation",
+  "version": "1.0.0",
+  "description": "Portal for micro frontends using Webpack Module Federation and Single SPA",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evjero/portal-federation.git"
+  },
+  "keywords": [
+    "Module",
+    "Federation",
+    "SPA",
+    "React"
+  ],
+  "author": "evjero (https://github.com/evjero)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evjero/portal-federation/issues"
+  },
+  "homepage": "https://github.com/evjero/portal-federation#readme"
+}
