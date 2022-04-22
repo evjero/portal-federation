@@ -2,7 +2,7 @@
 
 Portal for micro frontends using [Webpack Module Federation](https://webpack.js.org/concepts/module-federation/) and Single SPA
 
-## Project Description
+## Project Goals[<sup>0</sup>](https://webpack.js.org/concepts/module-federation/#concept-goals)
 
 ### Frameworks & Libraries
 
@@ -13,26 +13,34 @@ Portal for micro frontends using [Webpack Module Federation](https://webpack.js.
 -   [Semantic UI React](https://github.com/Semantic-Org/Semantic-UI-React) - user interface component library
 -   [Webpack 5](https://webpack.js.org/) - asset bundler
 -   [Express OIDC](https://auth0.github.io/express-openid-connect/) - login server
+-   [MongoDB](https://github.com/oauthjs/express-oauth-server/tree/master/examples/mongodb) - user database
 -   [Vite](https://vitejs.dev/) - web server
 -   [Vercel](https://vercel.com) - edge deployment
 
+### Use Cases
+
+UC-1: As a user, I want to access the application from a single URL
+UC-2: As a user, I need to have my own account
+UC-3: As a user, I need to be able to access features that I am allowed to
+
+### Requirements
+
+R-1: Main entrypoint shall redirect to login screen (Express OIDC, e.g., http://localhost:3000)
+R-2: [Main](https://webpack.js.org/concepts/module-federation/#separate-builds-per-page) application shall supply some form of global navigation (React, React Router 6)
+R-3: Feature applications shall only be exposed to permitted users
+R-4: Feature applications shall receive session information from Main application (Redux)
+
 ### Design Considerations
 
-1. User should access a single URL to login to ecosystem (e.g., http://localhost:3000)
-1. User shall be redirected to login screen if not logged in (Express OIDC)
-1. User can log in and proceed to main application `Index` hub (React)
-1. User can navigate to Applications from `Navbar` (React Router 6)
-1. The main application should provide a global state store context (Redux)
-1. Applications can have their own router and pages
-1. Applications should use the same shared UI components (Semantic UI React)
-1. Applications should consume a global state store (Redux)
-1. Applications can provide their own store
-1. Application runtimes and (non-shared) dependencies should be bundled (Webpack 5)
-1. Shared Application dependencies should be federated (Webpack 5)
-1. Applications should be hosted separately in true distributed fashion (Vite)
-1. Applications should be configurable via YAML or JSON files
-
-1. Configuration should be done at the time of deployment (Vercel)
+D-1: Feature applications may have their own internal router and sub pages
+D-2: Feature applications should use the same shared UI components from a [container](https://webpack.js.org/concepts/module-federation/#components-library-as-container) (Semantic UI React)
+D-3: Feature applications should consume a global state store (Redux)
+D-4: Feature applications can provide their own local state store
+D-5: Feature application runtimes and (non-shared) dependencies should be bundled (Webpack 5)
+D-6: Shared Application dependencies should be federated (Webpack 5)
+D-7: Feature applications shall be hosted separately in true distributed fashion (Vite)
+D-8: Feature applications shall be configurable via YAML or JSON files
+D-9: Configuration should be done at the time of deployment (Vercel)
 
 ## How it works
 
