@@ -1,8 +1,16 @@
 # Portal Federation
 
-Portal for micro frontends using [Webpack Module Federation](https://webpack.js.org/concepts/module-federation/) and Single SPA
+Portal for micro frontends using [Webpack Module Federation](https://webpack.js.org/concepts/module-federation/) and [Single SPA](https://single-spa.js.org/)
 
-## Project Goals[<sup>0</sup>](https://webpack.js.org/concepts/module-federation/#concept-goals)
+## Project Goals
+
+### Motivation
+
+Why look into Module Federation? Let's start with a traditional monolithic application product. _Team A_ wrote `CommonComponent1` that _Team B_ wants to make an update to. The product needs a new version to be built. _Slow and annoying_. Let's upgrade to multiple projects that get bundled together and are hosted from a single webserver. Now _Team A_ updates `CommonComponent1` to v2 in their own app. _Team B_ does not have to take that update because their app is isolated. However, the product _still_ needs a new version, and the webserver needs to be redeployed. _Annoying, still, and perhaps just as slow, just an organized slowness_.
+
+Let's now imagine that we have _dozens_ of applications, perhaps a handful that depend on common packages, but all depend on a singular framework. The customer asks for an enhancement which requires a particular framework change, that'll need to make it to a new version of the product (a SPA). _Great_... Some sorry group of developers needs to make that framework change, propogate a new package version to all common component packages, get them through CI, and continue the process down the chain into the applications, and _then_ the deployment project. What the heck? Did we exchange organization for efficiency?
+
+#### Knowing what we know _today_, can we do better?
 
 ### Frameworks & Libraries
 
@@ -12,6 +20,7 @@ Portal for micro frontends using [Webpack Module Federation](https://webpack.js.
 -   [React Router 6](https://reactrouterdotcom.fly.dev/) - for local routing between apps
 -   [Semantic UI React](https://github.com/Semantic-Org/Semantic-UI-React) - user interface component library
 -   [Webpack 5](https://webpack.js.org/) - asset bundler
+-   [Single-SPA\*](https://single-spa.js.org/) - microservice liaison (\*only _required_ if not _all_ rendering done in React, e.g., SolidJS)
 -   [Express OIDC](https://auth0.github.io/express-openid-connect/) - login server
 -   [MongoDB](https://github.com/oauthjs/express-oauth-server/tree/master/examples/mongodb) - user database
 -   [Vite](https://vitejs.dev/) - web server
@@ -113,7 +122,7 @@ These applications become:
 
 Load the Landing page first? That's the host. Navigate from there to the About page? That's a remote. Refresh on the About? Now About is the host. The fetching between hosts and remotes only requires small portions of runtime code, not an entire entrypoint or entire application.
 
-This host/remote debacle can be streamlined in architecture as treating a simple head entrypoint on top of an application. This main entrypoint connects all the other Webpack runtimes and provisions from the orchestration layer at runtime. It's not a normal app entrypoint; only a few KB. We'll call this simple package a **Sigil**. Sigils are our special entrypoints that will contain a special Webpack runtime that can interface with a host, we'll call a **Portal**.
+This host/remote debacle can be streamlined in architecture as treating a simple head entrypoint on top of an application. This main entrypoint connects all the other Webpack runtimes and provisions from the orchestration layer at runtime. It's not a normal app entrypoint; only a few KB. We'll call this simple package a **Remote Entry**. Remote Entries are our special entrypoints that will contain a special Webpack runtime that can interface with a host, we'll call a **Portal**.
 
 ### Terminology
 
@@ -121,9 +130,9 @@ This host/remote debacle can be streamlined in architecture as treating a simple
 
 A **Portal App** is a frontend application, built with Webpack, and will be consumed by the host. In order to be consumed, it must declare what it will expose. It can expose anything from lowest-level components like a particular Button to it's highest-level component like an Initializer. While there is support for bi-directional hosting, I don't see a point in using it from a more traditional app structure, so Portal Apps will not become a host - the user will only access the _main_ entry.
 
-#### Sigil (an entry point)
+#### Remote Entry (an entry point)
 
-A **Sigil**, as described above, will act as an entry to its corresponding Portal App. The goal is to have this be as small as possible to avoid network overhead, and provide _just enough_ configuration in order to allow the orchestration from Webpack to perform its operations.
+A **Remote Entry**, as described above, will act as an entry to its corresponding Portal App. The goal is to have this be as small as possible to avoid network overhead, and provide _just enough_ configuration in order to allow the orchestration from Webpack to perform its operations.
 
 #### Portal (a shell and host)
 
@@ -132,8 +141,8 @@ The **Portal** shell application is going to act as a host/hub for all downstrea
 ```mermaid
 graph LR;
 P(Portal :3000/)
-S1(:3001/sigil.js)
-S2(:3002/sigil.js)
+S1(:3001/remoteEntry.js)
+S2(:3002/remoteEntry.js)
 A1(:3001/portalApp.js)
 A2(:3002/portalApp.js)
 P--router-->S1--federation-->A1--bootstrapper-->S1--promise-->P
@@ -187,7 +196,7 @@ module.exports = {
 		new ModuleFederationPlugin({
 			name: "app_two_remote",
 			library: { type: "var", name: "app_two_remote" },
-			filename: "sigil.js",
+			filename: "remoteEntry.js",
 			exposes: {
 				“./Dialog”: "./src/Dialog"
 			},
@@ -227,3 +236,28 @@ export default function Page1() {
 ### Deployed Independently
 
 In a true distributed fashion, these micro-frontends should be deployed separately via their own webservers. Each webserver _can_ be on the same host IP, and different ports, or different IPs depending on the networking configuration (_blah blah insert CORS/Certs hand-waiving_).
+
+### 5 Misconceptions[<sup>4</sup>](https://github.com/jherr/mf-five-mistakes/tree/main/mf-five-mistakes-ts)
+
+#### Module Federation != Micro-frontends
+
+Module Federation is a _code transport layer_, getting runtimes across boundaries. Micro-frontends on the other hand, is an architectural style that suggests sharing code between applications (particularly UI). Typically, micro-frontends are capable of being deployed standalone, while _sharing_ pieces of those frontends can be made easier with federation.
+
+#### It doesn't manage state
+
+Exposed modules/components that have internal state management will end up being isolated in terms of state.
+E.g., a `Counter` exposed from a "remote" project to a "host" project - the "host" `import`s the `Counter` from the "remote" and what happens when we increase count? Nothing! All we're doing is sharing the objects and their properties, not runtime mutations.
+
+#### Federated Modules are deployed like assets
+
+Projects that share code will have to be deployed to operate as _static assets_. It becomes a static application. We aim to make an asset store, like [S3](https://docs.aws.amazon.com/s3/index.html), to host our modules so our app doesn't fail to load scripts or crash if a particular remote goes down. Docker is a poor choice to host these bits. The consuming _applications_ can be hosted from Docker though, so long as they do not intend to expose modules.
+
+#### Federated Modules are _NOT_ versioned
+
+Let's say Team A makes an update to an exposed component where function signatures were changed, i.e. parameters or return types. Team B uses that exposed component, and refreshes their page, when _boom_ it breaks. One good way to make it obvious is with React's [ErrorBoundary](https://reactjs.org/docs/error-boundaries.html)
+
+#### Federated Modules do _NOT_ have type declarations
+
+Since exposed modules are purely compiled JavaScript, there is no typing information involved, at all! That's a big bummer! How can we remedy this? Well, we can add a local `@types/**/index.d.ts` within our project, then massage the consuming `tsconfig.json` with `jsx: "react"` and `paths: ['./src/@types]`. It'd be _better_ if we could define some sort of **_contract_** between the two, ergo a **shared library**. Our **shared library** will have all it's functions, components, modules, **and type declarations** provided as part of the index.
+
+> You can define those types in any build-time available resource, could be an NPM library, a local file, etc. The issue here is build-time vs run-time and it's not specific to Module Federation. - Jack Herrington
