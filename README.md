@@ -254,10 +254,11 @@ Projects that share code will have to be deployed to operate as _static assets_.
 
 #### Federated Modules are _NOT_ versioned
 
-Let's say Team A makes an update to an exposed component where function signatures were changed, i.e. parameters or return types. Team B uses that exposed component, and refreshes their page, when _boom_ it breaks. One good way to make it obvious is with React's [ErrorBoundary](https://reactjs.org/docs/error-boundaries.html)
+Let's say Team A makes an update to an exposed component where function signatures were changed, i.e. parameters or return types. Team B uses that exposed component, and refreshes their page, when _boom_ it breaks. One good way to make it obvious is with React's [ErrorBoundary](https://reactjs.org/docs/error-boundaries.html). Unlike traditional NPM published packages being consumed on all apps, using federated modules _may_ break at runtime after deployment because of the unsafe version-control. The huge tradeoff here is safety for efficiency.
 
 #### Federated Modules do _NOT_ have type declarations
 
 Since exposed modules are purely compiled JavaScript, there is no typing information involved, at all! That's a big bummer! How can we remedy this? Well, we can add a local `@types/**/index.d.ts` within our project, then massage the consuming `tsconfig.json` with `jsx: "react"` and `paths: ['./src/@types]`. It'd be _better_ if we could define some sort of **_contract_** between the two, ergo a **shared library**. Our **shared library** will have all it's functions, components, modules, **and type declarations** provided as part of the index.
 
 > You can define those types in any build-time available resource, could be an NPM library, a local file, etc. The issue here is build-time vs run-time and it's not specific to Module Federation. - Jack Herrington
+
