@@ -25,16 +25,16 @@ Opinionated "better":
 ### Frameworks & Libraries
 
 -   [React 18](https://reactjs.org/) - for rendering, context, local state, and lifecycle methods
+    -   [SolidJS](https://solidjs.com/) - alternative to React, to test Single-SPA capabilities (below)
 -   [Redux](https://redux.js.org/) - for application state container
 -   [Redux Toolkit](https://redux-toolkit.js.org/) - for better DX on asynchronous operation calls and communications
 -   [React Router 6](https://reactrouterdotcom.fly.dev/) - for local routing between apps
 -   [Semantic UI React](https://github.com/Semantic-Org/Semantic-UI-React) - user interface component library
--   [Webpack 5](https://webpack.js.org/) - asset bundler
+-   [Webpack 5](https://webpack.js.org/) - asset/module bundler and server
 -   [Single-SPA\*](https://single-spa.js.org/) - microservice liaison (\*only _required_ if not _all_ rendering done in React, e.g., SolidJS)
 -   [Express OIDC](https://auth0.github.io/express-openid-connect/) - login server
 -   [MongoDB](https://github.com/oauthjs/express-oauth-server/tree/master/examples/mongodb) - user database
--   [Vite](https://vitejs.dev/) - web server
--   [Vercel](https://vercel.com) - edge deployment
+-   [Vercel](https://vercel.com) - edge deployment (hobby plan)
 
 ### Use Cases
 
