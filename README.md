@@ -10,7 +10,17 @@ Why look into Module Federation? Let's start with a traditional monolithic appli
 
 Let's now imagine that we have _dozens_ of applications, perhaps a handful that depend on common packages, but all depend on a singular framework. The customer asks for an enhancement which requires a particular framework change, that'll need to make it to a new version of the product (a SPA). _Great_... Some sorry group of developers needs to make that framework change, propogate a new package version to all common component packages, get them through CI, and continue the process down the chain into the applications, and _then_ the deployment project. What the heck? Did we exchange organization for efficiency?
 
-#### Knowing what we know _today_, can we do better?
+> Knowing what we know _today_, can we do better?
+
+I'd like to think we can do better, but define better. What is better?
+
+Opinionated "better":
+
+-   Fewer network calls (faster load times)
+-   Organized repositories (responsibilities, maintenance, teams)
+-   Continuous deployment (low downtime, saas)
+-   Easy adoption (scalability, complexity)
+-   Proper error handling (consumer issue reporting)
 
 ### Frameworks & Libraries
 
@@ -275,3 +285,4 @@ Since exposed modules are purely compiled JavaScript, there is no typing informa
 
 > You can define those types in any build-time available resource, could be an NPM library, a local file, etc. The issue here is build-time vs run-time and it's not specific to Module Federation. - Jack Herrington
 
+## [FAQS](https://github.com/jherr/Module-Federation-FAQ#is-module-federation-the-only-way-to-do-micro-frontends)
