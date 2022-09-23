@@ -29,26 +29,39 @@ Let's now imagine that we have _dozens_ of applications, perhaps a handful that 
 ### Use Cases
 
 UC-1: As a user, I want to access the application from a single URL
+
 UC-2: As a user, I need to have my own account
+
 UC-3: As a user, I need to be able to access features that I am allowed to
 
 ### Requirements
 
 R-1: Main entrypoint shall redirect to login screen (Express OIDC, e.g., http://localhost:3000)
+
 R-2: [Main](https://webpack.js.org/concepts/module-federation/#separate-builds-per-page) application shall supply some form of global navigation (React, React Router 6)
+
 R-3: Feature applications shall only be exposed to permitted users
+
 R-4: Feature applications shall receive session information from Main application (Redux)
 
 ### Design Considerations
 
 D-1: Feature applications may have their own internal router and sub pages
+
 D-2: Feature applications should use the same shared UI components from a [container](https://webpack.js.org/concepts/module-federation/#components-library-as-container) (Semantic UI React)
+
 D-3: Feature applications should consume a global state store (Redux)
+
 D-4: Feature applications can provide their own local state store
+
 D-5: Feature application runtimes and (non-shared) dependencies should be bundled (Webpack 5)
+
 D-6: Shared Application dependencies should be federated (Webpack 5)
+
 D-7: Feature applications shall be hosted separately in true distributed fashion (Vite)
+
 D-8: Feature applications shall be configurable via YAML or JSON files
+
 D-9: Configuration should be done at the time of deployment (Vercel)
 
 ## How it works
