@@ -58,7 +58,7 @@ R-4: Feature applications shall receive session information from Main applicatio
 
 D-1: Feature applications may have their own internal router and sub pages
 
-D-2: Feature applications should use the same shared UI components from a [container](https://webpack.js.org/concepts/module-federation/#components-library-as-container) (Semantic UI React)
+D-2: Feature applications should use the same shared UI components from a [container](https://webpack.js.org/concepts/module-federation/#components-library-as-container) (Adobe Spectrum)
 
 D-3: Feature applications should consume a global state store (Redux)
 
