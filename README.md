@@ -29,7 +29,7 @@ Opinionated "better":
 -   [Redux](https://redux.js.org/) - for application state container
 -   [Redux Toolkit](https://redux-toolkit.js.org/) - for better DX on asynchronous operation calls and communications
 -   [React Router 6](https://reactrouterdotcom.fly.dev/) - for local routing between apps
--   [Semantic UI React](https://github.com/Semantic-Org/Semantic-UI-React) - user interface component library
+-   [Adobe Spectrum](https://github.com/adobe/react-spectrum) - user interface component library and design system
 -   [Webpack 5](https://webpack.js.org/) - asset/module bundler and server
 -   [Single-SPA\*](https://single-spa.js.org/) - microservice liaison (\*only _required_ if not _all_ rendering done in React, e.g., SolidJS)
 -   [Express OIDC](https://auth0.github.io/express-openid-connect/) - login server
